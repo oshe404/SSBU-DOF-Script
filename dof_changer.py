@@ -9,7 +9,7 @@ while labels == False:
         hash.load_labels("ParamLabels.csv")
         labels = True
     except:
-        print('no "ParamLabels.csv" file found, are you sure you have it in the same directory as the script with the same name?')
+        print('no "ParamLabels.csv" file found, are you sure you have it in the same directory as the script with the correct name?')
         time.sleep(2)
         exit()
 
