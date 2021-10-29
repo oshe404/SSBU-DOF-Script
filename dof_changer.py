@@ -20,26 +20,31 @@ dofMode = int(input("DOF Mode (0 = Off, 1 = On): "))
 startFocus = int(input("Enter focus start (0 = closest, starts just behind stage): "))
 endFocus = int(input("Enter end focus: "))
 irisCount = int(input("Enter iris count (Anything over 6 not recommended): "))
-
+renderparams = ("render_param.prc", "render_param_01.prc", "render_param_02.prc", "render_param_03.prc", "render_param_04.prc", "render_param_05.prc")
 with open("log.txt", "w") as log:
     try:
         for root, dir, files in os.walk(stgdir):
-            if "render_param.prc" in files:
-                currentdir = str(os.path.join(root, "render_param.prc"))
-                root = param(os.path.join(root, "render_param.prc"))
-                h = root[hash("depth_of_field")]
-                h[hash("mode")].value = dofMode
-                h[hash(0x0f09c31ed4)].value = irisCount
-                h[hash("focus_start")].value = startFocus
-                h[hash("focus_end")].value = endFocus
-                modDirList = currentdir.split("\\")
-                modDirList.pop(len(modDirList) - 1)
-                modDirList[len(modDirList) - 5] = "DOF Mod"
-                modDir = "/".join(modDirList)
-                os.makedirs(modDir)
-                modDir = modDir + "/render_param.prc"
-                root.save(modDir)
-                print("Replaced param at {}".format(modDir))
+            for file in files:
+                if file in renderparams:
+                    print(file)
+                    cFile = str(file)
+                    currentdir = str(os.path.join(root, cFile))
+                    rootP = param(os.path.join(root, cFile))
+                    h = rootP[hash("depth_of_field")]
+                    h[hash("mode")].value = dofMode
+                    h[hash(0x0f09c31ed4)].value = irisCount
+                    h[hash("focus_start")].value = startFocus
+                    h[hash("focus_end")].value = endFocus
+                    modDirList = currentdir.split("\\")
+                    modDirList.pop(len(modDirList) - 1)
+                    modDirList[len(modDirList) - 5] = "DOF Mod"
+                    modDir = "/".join(modDirList)
+                    print(modDir)
+                    if os.path.isdir(modDir) == False:
+                        os.makedirs(modDir)
+                    modDir = modDir + "/" + cFile
+                    rootP.save(modDir)
+                    print("Replaced param at {}".format(modDir))
         stgDirlst = stgdir.split("\\")
         if "stage" in stgDirlst:
             stgDirlst[stgDirlst.index("stage") - 1] = "DOF MOD"
@@ -55,10 +60,6 @@ with open("log.txt", "w") as log:
         traceback.print_exc(file=log)
         print("Failed to complete mod. Check log for details.")
         time.sleep(3)
-
-
-        
-
 
 
 
